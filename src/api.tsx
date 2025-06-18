@@ -1,18 +1,19 @@
 // src/api.ts
 import axios from "axios";
-import { useToken } from "./contexts/TokenContext.tsx";
-// ✅ URL base de tu backend deployado
+import { useToken } from "./contexts/TokenContext";
+
+// URL del backend
 const BACKEND_URL = "http://198.211.105.95:8080";
 
 /* -------------------- TIPOS -------------------- */
 
-// Entrada común para login y registro:
+// Entrada común para login y registro
 type AuthInput = {
   email: string;
-  passwd: string; // Ojo: ES 'passwd', NO 'password'
+  passwd: string; // importante: es "passwd", no "password"
 };
 
-// Respuesta común para login y registro:
+// Respuesta del backend para login/registro
 type AuthResponse = {
   status: number;
   message: string;
@@ -37,7 +38,7 @@ export function useSignup() {
         token: response.data.result.token,
         username: response.data.result.username,
       };
-    } catch {
+    } catch (error) {
       return { success: false, error: "Error al registrar el usuario" };
     }
   };
@@ -60,10 +61,34 @@ export function useLogin() {
         token: response.data.result.token,
         username: response.data.result.username,
       };
-    } catch {
+    } catch (error) {
       return { success: false, error: "Usuario o contraseña incorrecta" };
     }
   };
 
   return { login };
+}
+
+/* -------------------- DASHBOARD -------------------- */
+
+export function useExpensesSummary() {
+  const fetchSummary = async (token: string) => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/expenses_summary`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return { success: true, data: res.data };
+    } catch (error: any) {
+      console.error("Error al obtener resumen:", error);
+      return {
+        success: false,
+        error: error?.response?.data?.message || "Error al obtener resumen",
+      };
+    }
+  };
+
+  return { fetchSummary };
 }

@@ -1,42 +1,52 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-// Define el tipo del contexto
 type TokenContextType = {
   token: string | null;
-  saveToken: (token: string) => void;
+  saveToken: (userToken: string) => void;
   removeToken: () => void;
 };
 
-// Crea el contexto
 const TokenContext = createContext<TokenContextType | undefined>(undefined);
 
-// Provider que envuelve tu app
-export function TokenProvider({ children }: { children: ReactNode }) {
-  // Inicializa token desde localStorage si existe
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
+type TokenProviderProps = {
+  children: ReactNode;
+};
 
-  // Guarda el token en contexto y localStorage
-  const saveToken = (t: string) => {
-    localStorage.setItem("token", t);
-    setToken(t);
+export function TokenProvider({ children }: TokenProviderProps) {
+  const getToken = () => {
+    return localStorage.getItem("token");
   };
 
-  // Borra el token del contexto y localStorage
+  const [token, setToken] = useState<string | null>(getToken());
+
+  const saveToken = (userToken: string) => {
+    localStorage.setItem("token", userToken);
+    setToken(userToken);
+  };
+
   const removeToken = () => {
     localStorage.removeItem("token");
     setToken(null);
   };
 
+  const value = {
+    token,
+    saveToken,
+    removeToken,
+  };
+
   return (
-    <TokenContext.Provider value={{ token, saveToken, removeToken }}>
-      {children}
-    </TokenContext.Provider>
+    <TokenContext.Provider value={value}>{children}</TokenContext.Provider>
   );
 }
 
-// Hook personalizado para acceder al token
 export const useToken = () => {
-  const ctx = useContext(TokenContext);
-  if (!ctx) throw new Error("useToken must be used within TokenProvider");
-  return ctx;
+  const context = useContext(TokenContext);
+  if (context === undefined) {
+    throw new Error("useToken must be used within a TokenProvider");
+  }
+  return context;
 };
+
+export default useToken;
+

@@ -1,9 +1,7 @@
-// src/pages/Login.tsx
-import type { FormEvent } from "react"; // ✅ Esta es la forma correcta en tu proyecto
+import type { FormEvent } from "react";
 import { useLogin } from "../api";
 import { useToken } from "../contexts/TokenContext";
 import { useNavigate } from "react-router-dom";
-
 
 export default function Login() {
   const { login } = useLogin();
@@ -20,35 +18,39 @@ export default function Login() {
 
     if (result.success && result.token) {
       saveToken(result.token);
-      navigate("/protected");
+      navigate("/protected"); // 🔁 Redirige a donde quieras después del login
     } else {
       alert(result.error ?? "Error al iniciar sesión");
     }
   };
 
   return (
-    
-    <div className="p-6 max-w-sm mx-auto mt-10 bg-white rounded shadow">
-      <h2 className="text-2xl mb-4 text-center">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Contraseña"
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
-        <button className="w-full bg-blue-600 text-white py-2 rounded">
-          Login
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Iniciar Sesión</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            name="email"
+            type="email"
+            placeholder="Correo electrónico"
+            required
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            required
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors duration-200 font-semibold"
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
