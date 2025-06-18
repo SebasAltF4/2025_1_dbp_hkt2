@@ -1,26 +1,34 @@
-// src/components/Navbar.tsx
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToken } from "../contexts/TokenContext";
 
 export default function Navbar() {
   const { token, removeToken } = useToken();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    removeToken();
+    navigate("/login");
+  };
+
   return (
-    <nav className="p-4 bg-gray-100 flex justify-between">
-      <span className="font-bold">AuthApp</span>
-      <div className="space-x-4">
-        {!token && (
-          <>
-            <Link to="/">Registro</Link>
-            <Link to="/login">Login</Link>
-          </>
-        )}
-        {token && (
-          <>
-            <Link to="/protected">Protected</Link>
-            <button onClick={removeToken} className="ml-2 text-red-500">Logout</button>
-          </>
-        )}
-      </div>
+    <nav className="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+      <h1 className="text-xl font-bold">Ahorrista 💰</h1>
+      {token && (
+        <ul className="flex space-x-4">
+          <li>
+            <Link to="/dashboard" className="hover:underline">Resumen</Link>
+          </li>
+          <li>
+            <Link to="/create-expense" className="hover:underline">Nuevo Gasto</Link>
+          </li>
+          <li>
+            <Link to="/goals" className="hover:underline">Metas</Link>
+          </li>
+          <li>
+            <button onClick={handleLogout} className="hover:underline">Cerrar sesión</button>
+          </li>
+        </ul>
+      )}
     </nav>
   );
 }
