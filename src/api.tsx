@@ -27,16 +27,10 @@ type AuthResponse = {
 export function useSignup() {
   const signup = async (user: AuthInput) => {
     try {
-      const response = await axios.post<AuthResponse>(
-        `${BACKEND_URL}/authentication/register`,
-        user
-      );
+      // ✅ no necesitas guardar 'response'
+      await axios.post(`${BACKEND_URL}/authentication/register`, user);
 
-      return {
-        success: true,
-        token: response.data.result.token,
-        username: response.data.result.username,
-      };
+      return { success: true };
     } catch {
       return { success: false, error: "Error al registrar el usuario" };
     }
@@ -44,7 +38,6 @@ export function useSignup() {
 
   return { signup };
 }
-
 /* -------------------- LOGIN -------------------- */
 
 export function useLogin() {
