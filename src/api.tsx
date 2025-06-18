@@ -1,16 +1,18 @@
 // src/api.ts
 import axios from "axios";
 import { useToken } from "./contexts/TokenContext.tsx";
+// ✅ URL base de tu backend deployado
 const BACKEND_URL = "http://198.211.105.95:8080";
 
 /* -------------------- TIPOS -------------------- */
 
-
+// Entrada común para login y registro:
 type AuthInput = {
   email: string;
-  passwd: string; 
+  passwd: string; // Ojo: ES 'passwd', NO 'password'
 };
 
+// Respuesta común para login y registro:
 type AuthResponse = {
   status: number;
   message: string;

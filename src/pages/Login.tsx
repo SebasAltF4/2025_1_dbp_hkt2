@@ -1,8 +1,9 @@
 // src/pages/Login.tsx
-import { type FormEvent } from "react";
+import type { FormEvent } from "react"; // ✅ Esta es la forma correcta en tu proyecto
 import { useLogin } from "../api";
-import { useToken } from "../contexts/TokenContext.tsx";
+import { useToken } from "../contexts/TokenContext";
 import { useNavigate } from "react-router-dom";
+
 
 export default function Login() {
   const { login } = useLogin();
@@ -15,10 +16,8 @@ export default function Login() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // ✅ tu API espera "passwd", no "password"
     const result = await login({ email, passwd: password });
 
-    // ✅ valida que exista el token
     if (result.success && result.token) {
       saveToken(result.token);
       navigate("/protected");
@@ -28,6 +27,7 @@ export default function Login() {
   };
 
   return (
+    
     <div className="p-6 max-w-sm mx-auto mt-10 bg-white rounded shadow">
       <h2 className="text-2xl mb-4 text-center">Login</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
