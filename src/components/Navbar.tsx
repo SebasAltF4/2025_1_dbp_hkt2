@@ -11,36 +11,39 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
-      <h1 className="text-xl font-bold">Ahorrista 💰</h1>
-      <ul className="flex space-x-4">
-        {!token && (
-          <>
-            <li>
-              <Link to="/signup" className="hover:underline">Registrarse</Link>
-            </li>
-            <li>
-              <Link to="/login" className="hover:underline">Iniciar sesión</Link>
-            </li>
-          </>
-        )}
-        {token && (
-          <>
-            <li>
-              <Link to="/dashboard" className="hover:underline">Resumen</Link>
-            </li>
-            <li>
-              <Link to="/create-expense" className="hover:underline">Nuevo Gasto</Link>
-            </li>
-            <li>
-              <Link to="/goals" className="hover:underline">Metas</Link>
-            </li>
-            <li>
-              <button onClick={handleLogout} className="hover:underline">Cerrar sesión</button>
-            </li>
-          </>
-        )}
-      </ul>
-    </nav>
+   <nav className="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+  <Link to="/" className="text-xl font-bold hover:underline">
+    Ahorrista 💰
+  </Link>
+
+  <ul className="flex space-x-4">
+    {!token ? (
+      <>
+        <li>
+          <Link to="/signup" className="hover:underline">Registrarse</Link>
+        </li>
+        <li>
+          <Link to="/login" className="hover:underline">Iniciar sesión</Link>
+        </li>
+      </>
+    ) : (
+      <>
+        <li>
+          <Link to="/dashboard" className="hover:underline">Resumen</Link>
+        </li>
+        <li>
+          <Link to="/create-expense" className="hover:underline">Nuevo Gasto</Link>
+        </li>
+        <li>
+          <Link to="/goals" className="hover:underline">Metas</Link>
+        </li>
+        <li>
+          <button onClick={handleLogout} className="hover:underline">Cerrar sesión</button>
+        </li>
+      </>
+    )}
+  </ul>
+</nav>
+
   );
 }

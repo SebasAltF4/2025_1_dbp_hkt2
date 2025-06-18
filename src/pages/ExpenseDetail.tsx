@@ -1,60 +1,73 @@
+// src/pages/ExpenseDetail.tsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { useToken } from "../contexts/TokenContext";
+import axios from "axios";
 
 interface Expense {
   id: number;
-  description: string;
   amount: number;
+  description: string;
   date: string;
 }
 
 export default function ExpenseDetail() {
   const { token } = useToken();
-  const { categoryId } = useParams();
+  const { id } = useParams(); // id = categoryId
+
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+
         const res = await axios.get(
-          `/expenses/detail?year=2025&month=6&categoryId=${categoryId}`,
+          `/expenses/detail?year=${year}&month=${month}&categoryId=${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setExpenses(res.data);
+
+        const data = Array.isArray(res.data) ? res.data : res.data.data;
+        setExpenses(data);
       } catch (err) {
-        console.error("Error al obtener detalles:", err);
-        setError("No se pudo cargar el detalle de gastos.");
+        setError("Error al cargar los gastos de esta categoría");
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (token && categoryId) {
-      fetchDetails();
-    }
-  }, [token, categoryId]);
+    fetchDetails();
+  }, [id, token]);
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center">
-        Detalle de gastos por categoría
-      </h2>
+    <div className="max-w-2xl mx-auto mt-6 px-4">
+      <h2 className="text-2xl font-bold mb-4 text-center">Gastos por Categoría</h2>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {loading && <p className="text-center">Cargando...</p>}
+      {error && <p className="text-red-500 text-center">{error}</p>}
+
+      {expenses.length === 0 && !loading && <p className="text-center">No hay gastos en esta categoría.</p>}
 
       <ul className="space-y-3">
         {expenses.map((exp) => (
-          <li key={exp.id} className="border p-3 rounded flex justify-between">
+          <li
+            key={exp.id}
+            className="bg-white border p-4 rounded shadow flex justify-between"
+          >
             <div>
-              <p className="font-medium">{exp.description}</p>
-              <p className="text-sm text-gray-600">{new Date(exp.date).toLocaleDateString()}</p>
+              <p className="font-semibold">{exp.description}</p>
+              <p className="text-sm text-gray-500">{new Date(exp.date).toLocaleDateString()}</p>
             </div>
-            <div className="font-bold">S/ {exp.amount.toFixed(2)}</div>
+            <span className="font-bold">S/ {exp.amount.toFixed(2)}</span>
           </li>
         ))}
       </ul>
