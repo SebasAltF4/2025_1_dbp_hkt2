@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../api";
-import { useToken } from "../contexts/TokenContext";
 
 export default function Signup() {
   const [form, setForm] = useState({ email: "", passwd: "" });
   const [error, setError] = useState("");
   const { signup } = useSignup();
-  const { saveToken } = useToken();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,8 +16,8 @@ export default function Signup() {
     e.preventDefault();
     const result = await signup(form);
 
-    if (result.success && result.token) {
-      saveToken(result.token);
+    if (result.success) {
+      // Redirige al login porque el registro NO devuelve token
       navigate("/login");
     } else {
       setError(result.error ?? "Error al registrar");

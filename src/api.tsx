@@ -13,7 +13,7 @@ type AuthInput = {
   passwd: string; // importante: es "passwd", no "password"
 };
 
-// Respuesta del backend para login/registro
+// Respuesta del backend para login
 type AuthResponse = {
   status: number;
   message: string;
@@ -28,17 +28,11 @@ type AuthResponse = {
 export function useSignup() {
   const signup = async (user: AuthInput) => {
     try {
-      const response = await axios.post<AuthResponse>(
-        `${BACKEND_URL}/authentication/register`,
-        user
-      );
+      // ✅ no necesitas guardar 'response'
+      await axios.post(`${BACKEND_URL}/authentication/register`, user);
 
-      return {
-        success: true,
-        token: response.data.result.token,
-        username: response.data.result.username,
-      };
-    } catch (error) {
+      return { success: true };
+    } catch {
       return { success: false, error: "Error al registrar el usuario" };
     }
   };

@@ -1,13 +1,13 @@
 // src/App.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./Components/Navbar";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ExpenseDetail from "./pages/ExpenseDetail";
 import CreateExpense from "./pages/CreateExpense";
 import Goals from "./pages/Goals";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 export default function App() {
   return (
