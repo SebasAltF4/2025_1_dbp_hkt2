@@ -1,7 +1,7 @@
 // src/pages/CreateExpense.tsx
 import { useEffect, useState } from "react";
 import { useToken } from "../contexts/TokenContext";
-import axios from "axios";
+import { useExpenseCategories, useCreateExpense } from "../api";
 
 interface Category {
   id: number;
@@ -10,59 +10,51 @@ interface Category {
 
 export default function CreateExpense() {
   const { token } = useToken();
+  const { fetchCategories } = useExpenseCategories();
+  const { createExpense } = useCreateExpense();
+
   const [categories, setCategories] = useState<Category[]>([]);
-  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
   const [amount, setAmount] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axios.get("/expenses_category", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("Categorías recibidas:", res.data);
-
-        const data = Array.isArray(res.data) ? res.data : [];
-        setCategories(data);
-      } catch (err) {
-        console.error("Error al cargar categorías", err);
+    const loadCategories = async () => {
+      const result = await fetchCategories(token ?? "");
+      if (result.success) {
+        setCategories(result.data);
+      } else {
+        setMessage(result.error ?? "Error al cargar categorías");
       }
     };
-
-    fetchCategories();
+    loadCategories();
   }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
 
-    try {
-      await axios.post(
-        "/expenses",
-        {
-          description,
-          amount: parseFloat(amount),
-          categoryId: parseInt(categoryId),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    const category = categories.find((cat) => cat.id === Number(categoryId));
+    if (!category) {
+      setMessage("Selecciona una categoría válida");
+      return;
+    }
 
+    const result = await createExpense(
+      token ?? "",
+      date,
+      category,
+      parseFloat(amount)
+    );
+
+    if (result.success) {
       setMessage("✅ Gasto registrado exitosamente");
-      setDescription("");
+      setDate("");
       setAmount("");
       setCategoryId("");
-    } catch (err) {
-      console.error("Error al registrar gasto", err);
-      setMessage("❌ Error al registrar gasto");
+    } else {
+      setMessage(result.error ?? "❌ Error al registrar gasto");
     }
   };
 
@@ -72,10 +64,9 @@ export default function CreateExpense() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Descripción"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
           required
           className="w-full border px-3 py-2 rounded"
         />

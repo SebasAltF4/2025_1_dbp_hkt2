@@ -18,7 +18,7 @@ export default function Login() {
 
     if (result.success && result.token) {
       saveToken(result.token);
-      navigate("/protected"); // 🔁 Redirige a donde quieras después del login
+      navigate("/dashboard"); // 🔁 Redirige a donde quieras después del login
     } else {
       alert(result.error ?? "Error al iniciar sesión");
     }

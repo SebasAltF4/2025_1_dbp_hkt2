@@ -1,4 +1,4 @@
-// src/api.ts
+// src/api.tsx
 import axios from "axios";
 import { useToken } from "./contexts/TokenContext";
 
@@ -86,3 +86,104 @@ export function useExpensesSummary() {
 
   return { fetchSummary };
 }
+
+/* -------------------- CATEGORIES -------------------- */
+
+export function useExpenseCategories() {
+  const fetchCategories = async (token: string) => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/expenses_category`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return { success: true, data: res.data };
+    } catch (err) {
+      console.error("Error al obtener categorías:", err);
+      return { success: false, error: "Error al obtener categorías" };
+    }
+  };
+  return { fetchCategories };
+}
+
+/* -------------------- EXPENSE DETAILS -------------------- */
+
+export function useExpenseDetails() {
+  const fetchDetails = async (
+    token: string,
+    year: number,
+    month: number,
+    categoryId: number
+  ) => {
+    try {
+      const res = await axios.get(
+        `${BACKEND_URL}/expenses/detail?year=${year}&month=${month}&categoryId=${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return { success: true, data: res.data };
+    } catch (err) {
+      console.error("Error al obtener detalles:", err);
+      return { success: false, error: "Error al obtener detalles" };
+    }
+  };
+
+  return { fetchDetails };
+}
+
+/* -------------------- DELETE EXPENSE -------------------- */
+
+export function useDeleteExpense() {
+  const deleteExpense = async (token: string, expenseId: number) => {
+    try {
+      await axios.delete(`${BACKEND_URL}/expenses/${expenseId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Error al eliminar gasto:", err);
+      return { success: false, error: "Error al eliminar gasto" };
+    }
+  };
+
+  return { deleteExpense };
+}
+
+/* -------------------- CREATE EXPENSE -------------------- */
+
+export function useCreateExpense() {
+  const createExpense = async (
+    token: string,
+    date: string,
+    category: { id: number; name: string },
+    amount: number
+  ) => {
+    try {
+      await axios.post(
+        `${BACKEND_URL}/expenses`,
+        {
+          date,
+          category,
+          amount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return { success: true };
+    } catch (err) {
+      console.error("Error al registrar gasto:", err);
+      return { success: false, error: "Error al registrar gasto" };
+    }
+  };
+
+  return { createExpense };
+}
+
