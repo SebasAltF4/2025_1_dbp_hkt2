@@ -1,6 +1,5 @@
 // src/api.tsx
 import axios from "axios";
-import { useToken } from "./contexts/TokenContext";
 
 // URL del backend
 const BACKEND_URL = "http://198.211.105.95:8080";
