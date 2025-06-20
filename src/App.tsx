@@ -6,7 +6,6 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ExpenseDetail from "./pages/ExpenseDetail";
 import CreateExpense from "./pages/CreateExpense";
-import Goals from "./pages/Goals";
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 export default function App() {
@@ -14,7 +13,7 @@ export default function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/signup" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
@@ -27,9 +26,8 @@ export default function App() {
           }
         />
 
-
         <Route
-          path="/expenses/:categoryId"
+          path="/expenses-detail"
           element={
             <ProtectedRoute>
               <ExpenseDetail />
@@ -42,15 +40,6 @@ export default function App() {
           element={
             <ProtectedRoute>
               <CreateExpense />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/goals"
-          element={
-            <ProtectedRoute>
-              <Goals />
             </ProtectedRoute>
           }
         />
