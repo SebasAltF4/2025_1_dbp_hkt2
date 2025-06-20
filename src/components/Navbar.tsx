@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <nav className="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
       <Link to="/" className="text-xl font-bold hover:underline">
-        Ahorrista 💰
+        Hackaton2 💰
       </Link>
 
       <ul className="flex space-x-4">
